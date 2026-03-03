@@ -1,10 +1,10 @@
 # TAPD Skill
 
-本目录为 **TAPD 的 Agent Skill**，可在不依赖 MCP 服务的情况下，通过 AI（如 Claude、Cursor）直接调用 TAPD 开放 API，完成需求、任务、缺陷、评论、迭代、测试用例、Wiki、工时、发布计划等操作，或发送企业微信通知。
+本目录为 **TAPD 的 Agent Skill**，可在不依赖 MCP 服务的情况下，通过 AI（如 Claude、Cursor、OpenClaw）直接调用 TAPD 开放 API，完成需求、任务、缺陷、评论、迭代、测试用例、Wiki、工时、发布计划等操作，或发送企业微信通知。
 
 ## 使用方式
 
-- **在 Claude / Cursor 等中**：将本 Skill 目录（或仓库）配置为可加载的 Skill 来源，使 AI 在用户提到 TAPD 相关操作时自动遵循 [SKILL.md](./SKILL.md) 中的说明。
+- **在 Claude / Cursor / OpenClaw 等中**：将本 Skill 目录（或仓库）配置为可加载的 Skill 来源，使 AI 在用户提到 TAPD 相关操作时自动遵循 [SKILL.md](./SKILL.md) 中的说明。
 - **无需安装 MCP server**：本 Skill 仅提供文档与可选的标准库 Python 脚本，由 AI 根据文档构造 HTTP 请求或运行脚本。
 
 ## 环境变量与认证
@@ -21,9 +21,7 @@
 | BOT_URL | 可选 | 企业微信机器人 webhook（仅发送群消息时需要） |
 | CURRENT_USER_NICK | 可选 | 当前用户昵称（参与项目、待办、工时等查询的默认 nick） |
 
-认证二选一：**TAPD_ACCESS_TOKEN** 或 **TAPD_API_USER + TAPD_API_PASSWORD**。
-
-获取方式可参考 [mcp-server-tapd 的 README](../mcp-server-tapd/README.md)（同一套 TAPD 凭据可复用）。
+认证二选一：**TAPD_ACCESS_TOKEN** 或 **TAPD_API_USER + TAPD_API_PASSWORD**。凭据在 TAPD 后台「个人设置」→「开放平台」中创建。
 
 ## 命令行快速调用
 
