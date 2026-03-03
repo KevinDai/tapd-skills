@@ -1,0 +1,45 @@
+# TAPD Skill 配置
+# 元数据与环境变量定义，供 AI/运行时读取。详细使用说明见 SKILL.md。
+
+name: tapd
+version: "1.0.0"
+description: >
+  当用户需要查询、创建或更新 TAPD 需求、任务、缺陷、评论、工作流、迭代、测试用例、Wiki、工时、发布计划，
+  或发送企业微信通知时使用本 Skill。使用 Python 标准库调用 TAPD 开放 API，不依赖 MCP 或第三方 HTTP 库。
+
+metadata:
+  openclaw:
+    primaryEnv: TAPD_ACCESS_TOKEN
+    emoji: "📋"
+
+# 环境变量配置：required 为 true 表示该组二选一必填
+env:
+  - name: TAPD_ACCESS_TOKEN
+    required: false  # 与 TAPD_API_USER/TAPD_API_PASSWORD 二选一
+    description: 个人访问令牌，推荐
+  - name: TAPD_API_USER
+    required: false
+    description: API 账号（与 TAPD_API_PASSWORD 搭配）
+  - name: TAPD_API_PASSWORD
+    required: false
+    description: API 密码
+  - name: TAPD_API_BASE_URL
+    required: false
+    default: "https://api.tapd.cn"
+    description: API 根地址
+  - name: TAPD_BASE_URL
+    required: false
+    default: "https://www.tapd.cn"
+    description: 前端地址，用于生成需求/任务/缺陷等链接
+  - name: BOT_URL
+    required: false
+    description: 企业微信机器人 webhook，仅发送群消息时需要
+  - name: CURRENT_USER_NICK
+    required: false
+    description: 当前用户昵称，未传 nick 时用于参与项目、待办、工时等查询
+
+# 认证规则说明（供解析用）
+auth:
+  modes:
+    - token  # TAPD_ACCESS_TOKEN
+    - basic  # TAPD_API_USER + TAPD_API_PASSWORD

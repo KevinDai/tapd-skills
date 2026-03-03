@@ -1,8 +1,7 @@
 ---
+# 完整配置（版本、环境变量、metadata）见 skill.yaml
 name: tapd
-version: "1.0.0"
 description: 当用户需要查询、创建或更新 TAPD 需求、任务、缺陷、评论、工作流、迭代、测试用例、Wiki、工时、发布计划，或发送企业微信通知时使用本 Skill。使用 Python 标准库调用 TAPD 开放 API，不依赖 MCP 或第三方 HTTP 库。
-metadata: {"openclaw":{"primaryEnv":"TAPD_ACCESS_TOKEN","emoji":"📋"}}
 ---
 
 # TAPD Skill
@@ -30,7 +29,7 @@ metadata: {"openclaw":{"primaryEnv":"TAPD_ACCESS_TOKEN","emoji":"📋"}}
 
 ## 环境与认证
 
-### 环境变量
+配置（环境变量、默认值、metadata）由 **skill.yaml** 统一管理，下表为速查。
 
 | 变量名 | 必填 | 说明 |
 |--------|------|------|

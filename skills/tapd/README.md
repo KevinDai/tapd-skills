@@ -9,7 +9,7 @@
 
 ## 环境变量与认证
 
-使用前请配置以下环境变量（由用户或运行脚本的环境提供）：
+环境变量与技能元数据由 **skill.yaml** 统一管理。使用前请配置以下环境变量（由用户或运行脚本的环境提供）：
 
 | 变量名 | 必填 | 说明 |
 |--------|------|------|
@@ -40,6 +40,7 @@ python scripts/tapd_client_stdlib.py post --endpoint "stories" -b '{"workspace_i
 
 ## 目录结构
 
+- **skill.yaml**：技能配置（版本、环境变量定义、默认值、metadata），供运行时与 AI 读取。
 - **SKILL.md**：Skill 说明、操作清单与**命令行调用方式**，AI 主入口。
 - **reference/api_reference.md**：API 端点与参数速查。
 - **scripts/tapd_client_stdlib.py**：仅用 Python 标准库的客户端，支持**命令行子命令**与 Python import。
