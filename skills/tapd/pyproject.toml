@@ -1,0 +1,6 @@
+[project]
+name = "tapd-skill"
+version = "1.0.0"
+description = "TAPD API client script for tapd skill (stdlib only)"
+requires-python = ">=3.9"
+dependencies = []

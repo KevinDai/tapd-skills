@@ -9,7 +9,7 @@
 
 ## 环境变量与认证
 
-环境变量与技能元数据由 **skill.yaml** 统一管理。使用前请配置以下环境变量（由用户或运行脚本的环境提供）：
+使用前请配置以下环境变量（由用户或运行脚本的环境提供）；OpenClaw 等运行时可从 SKILL.md 的 metadata 读取 `primaryEnv`、`requires.env`：
 
 | 变量名 | 必填 | 说明 |
 |--------|------|------|
@@ -25,29 +25,30 @@
 
 ## 命令行快速调用
 
-配置好环境变量后，可直接用命令行调用（无需 MCP），输出 JSON 到 stdout：
+需先安装 [uv](https://github.com/astral-sh/uv)（如 `brew install uv`）；OpenClaw 用户可根据 SKILL.md 中 metadata.openclaw.install 提示安装。配置好环境变量后，在技能目录下用 **uv run** 调用，输出 JSON 到 stdout：
 
 ```bash
-python scripts/tapd_client_stdlib.py projects [--nick 用户昵称]
-python scripts/tapd_client_stdlib.py workspace --workspace-id <项目ID>
-python scripts/tapd_client_stdlib.py stories --workspace-id <项目ID> [--limit 10] [--entity-type stories|tasks]
-python scripts/tapd_client_stdlib.py bugs --workspace-id <项目ID> [--limit 10]
-python scripts/tapd_client_stdlib.py get --endpoint "stories/count" -p workspace_id=<ID> -p entity_type=stories
-python scripts/tapd_client_stdlib.py post --endpoint "stories" -b '{"workspace_id":123,"name":"需求标题"}'
+uv run scripts/tapd_client_stdlib.py projects [--nick 用户昵称]
+uv run scripts/tapd_client_stdlib.py workspace --workspace-id <项目ID>
+uv run scripts/tapd_client_stdlib.py stories --workspace-id <项目ID> [--limit 10] [--entity-type stories|tasks]
+uv run scripts/tapd_client_stdlib.py bugs --workspace-id <项目ID> [--limit 10]
+uv run scripts/tapd_client_stdlib.py get --endpoint "stories/count" -p workspace_id=<ID> -p entity_type=stories
+uv run scripts/tapd_client_stdlib.py post --endpoint "stories" -b '{"workspace_id":123,"name":"需求标题"}'
 ```
 
-更多子命令与参数见 [SKILL.md](./SKILL.md) 中的「命令行调用方式」一节，或运行 `python scripts/tapd_client_stdlib.py --help`。
+更多子命令与参数见 [SKILL.md](./SKILL.md) 中的「命令行调用方式」一节，或运行 `uv run scripts/tapd_client_stdlib.py --help`。
 
 ## 目录结构
 
-- **skill.yaml**：技能配置（版本、环境变量定义、默认值、metadata），供运行时与 AI 读取。
-- **SKILL.md**：Skill 说明、操作清单与**命令行调用方式**，AI 主入口。
+- **SKILL.md**：Skill 说明、操作清单与**命令行调用方式**，AI 主入口；配置（metadata、openclaw.requires/primaryEnv/install）在 frontmatter 中。
+- **pyproject.toml**：uv 项目配置，无第三方依赖，便于 `uv run` 执行脚本。
 - **reference/api_reference.md**：API 端点与参数速查。
 - **scripts/tapd_client_stdlib.py**：仅用 Python 标准库的客户端，支持**命令行子命令**与 Python import。
 
 ## 依赖
 
-本 Skill 不依赖 MCP 或第三方库。若使用附带脚本，仅需 Python 3 标准库（`urllib.request`、`json`、`os`、`base64`）。
+- **uv**：运行脚本需安装 [uv](https://github.com/astral-sh/uv)（如 `brew install uv`）；OpenClaw 可根据 SKILL.md 中 `metadata.openclaw.install` 提示安装。
+- 脚本仅用 Python 3 标准库，无第三方包依赖；不依赖 MCP。
 
 ## 发布到 OpenClaw / ClawHub
 
