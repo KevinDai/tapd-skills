@@ -3,7 +3,7 @@ TAPD API 客户端（仅使用 Python 标准库）。
 
 依赖：urllib.request, json, os, base64, argparse。
 环境变量：TAPD_ACCESS_TOKEN 或 TAPD_API_USER + TAPD_API_PASSWORD；
-         TAPD_API_BASE_URL（必填）；可选 TAPD_BASE_URL, BOT_URL, CURRENT_USER_NICK。
+         TAPD_API_BASE_URL（可选，默认 https://api.tapd.cn）；可选 TAPD_BASE_URL（默认 https://www.tapd.cn）, BOT_URL, CURRENT_USER_NICK。
 
 命令行用法（AI 可直接调用）：
     python tapd_client_stdlib.py projects [--nick NICK]
@@ -31,10 +31,13 @@ from base64 import b64encode
 from typing import Any, Optional
 
 
+# 默认 TAPD 云环境地址，未配置环境变量时使用
+DEFAULT_TAPD_API_BASE_URL = "https://api.tapd.cn"
+DEFAULT_TAPD_BASE_URL = "https://www.tapd.cn"
+
+
 def _get_base_url() -> str:
-    base = os.environ.get("TAPD_API_BASE_URL")
-    if not base:
-        raise ValueError("请设置环境变量 TAPD_API_BASE_URL")
+    base = os.environ.get("TAPD_API_BASE_URL", DEFAULT_TAPD_API_BASE_URL)
     return base.rstrip("/")
 
 
@@ -61,7 +64,7 @@ def _get_headers() -> dict:
 
 
 def _is_cloud() -> bool:
-    base = os.environ.get("TAPD_API_BASE_URL", "")
+    base = os.environ.get("TAPD_API_BASE_URL", DEFAULT_TAPD_API_BASE_URL)
     return "api.tapd.cn" in base
 
 
@@ -164,7 +167,7 @@ def get_releases(workspace_id: int, options: Optional[dict] = None) -> dict:
 
 def _cli():
     parser = argparse.ArgumentParser(
-        description="TAPD API 命令行客户端（仅标准库）。需设置 TAPD_ACCESS_TOKEN 或 TAPD_API_USER/TAPD_API_PASSWORD、TAPD_API_BASE_URL。"
+        description="TAPD API 命令行客户端（仅标准库）。需设置 TAPD_ACCESS_TOKEN 或 TAPD_API_USER/TAPD_API_PASSWORD；TAPD_API_BASE_URL 可选（默认 https://api.tapd.cn）。"
     )
     sub = parser.add_subparsers(dest="command", required=True, help="子命令")
 

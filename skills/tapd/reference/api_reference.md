@@ -4,7 +4,7 @@
 
 ## 通用说明
 
-- **Base URL**：环境变量 `TAPD_API_BASE_URL`，如 `https://api.tapd.cn`。
+- **Base URL**：环境变量 `TAPD_API_BASE_URL`，默认 `https://api.tapd.cn`（未设置时使用该默认值）。
 - **认证**：`Authorization: Bearer <token>` 或 `Authorization: Basic <base64(user:password)>`。
 - **分页**：多数列表接口支持 `page`、`limit`（如 limit 默认 10 或 30，最大 200）。
 - **返回结构**：常见为 `{ "status": 1, "data": {...} 或 [...], "info": "..." }`；列表常在 `data` 下，单条如 `data.Story`、`data.Bug`、`data.Task`、`data.Iteration` 等。
