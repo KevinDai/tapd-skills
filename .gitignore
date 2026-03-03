@@ -16,5 +16,5 @@ dist/
 .DS_Store
 Thumbs.db
 
-# 内层仓库（合并到本仓库后忽略其 .git）
-mcp-server-tapd/.git
+# 忽略 MCP 服务端（单独维护或子模块）
+mcp-server-tapd/
