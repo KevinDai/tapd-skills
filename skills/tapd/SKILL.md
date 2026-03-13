@@ -7,18 +7,9 @@ metadata:
     "openclaw":
       {
         "emoji": "📋",
-        "requires": { "bins": ["uv"], "env": ["TAPD_ACCESS_TOKEN"] },
+        "requires": { "bins": [], "env": ["TAPD_ACCESS_TOKEN"] },
         "primaryEnv": "TAPD_ACCESS_TOKEN",
-        "install":
-          [
-            {
-              "id": "uv-brew",
-              "kind": "brew",
-              "formula": "uv",
-              "bins": ["uv"],
-              "label": "Install uv (brew)",
-            },
-          ],
+        "install": [],
       },
   }
 ---
@@ -145,37 +136,43 @@ TAPD 部分接口接受短 ID（≤9 位数字）。调用前需转为长 ID：
 
 ## 命令行调用方式（推荐 AI 使用）
 
-在配置好环境变量（TAPD_ACCESS_TOKEN 或 TAPD_API_USER/TAPD_API_PASSWORD；TAPD_API_BASE_URL 可选，默认云环境）后，使用 **uv** 运行脚本（需先安装 uv，见 metadata.openclaw.install 或 `brew install uv`）。输出为 JSON 到 stdout，便于解析。
+在配置好环境变量（TAPD_ACCESS_TOKEN 或 TAPD_API_USER/TAPD_API_PASSWORD；TAPD_API_BASE_URL 可选，默认云环境）后，使用 **python3** 运行脚本（脚本仅用标准库）。输出为 JSON 到 stdout，便于解析。
 
 ```bash
 # 获取用户参与的项目（nick 默认取环境变量 CURRENT_USER_NICK）
-uv run {baseDir}/scripts/tapd_client_stdlib.py projects [--nick 用户昵称]
+python3 {baseDir}/scripts/tapd_client_stdlib.py projects [--nick 用户昵称]
 
 # 获取项目信息
-uv run {baseDir}/scripts/tapd_client_stdlib.py workspace --workspace-id <项目ID>
+python3 {baseDir}/scripts/tapd_client_stdlib.py workspace --workspace-id <项目ID>
 
 # 获取需求或任务列表（--entity-type 默认 stories）
-uv run {baseDir}/scripts/tapd_client_stdlib.py stories --workspace-id <项目ID> [--entity-type stories|tasks] [--limit 10] [--page 1] [--id ID] [--name 标题] [--status 状态] [--fields id,name,description]
+python3 {baseDir}/scripts/tapd_client_stdlib.py stories --workspace-id <项目ID> [--entity-type stories|tasks] [--limit 10] [--page 1] [--id ID] [--name 标题] [--status 状态] [--fields id,name,description]
 
 # 获取缺陷列表
-uv run {baseDir}/scripts/tapd_client_stdlib.py bugs --workspace-id <项目ID> [--limit 10] [--page 1] [--id ID] [--title 标题]
+python3 {baseDir}/scripts/tapd_client_stdlib.py bugs --workspace-id <项目ID> [--limit 10] [--page 1] [--id ID] [--title 标题]
 
 # 获取迭代列表
-uv run {baseDir}/scripts/tapd_client_stdlib.py iterations --workspace-id <项目ID> [--limit 30] [--page 1] [--name 迭代名]
+python3 {baseDir}/scripts/tapd_client_stdlib.py iterations --workspace-id <项目ID> [--limit 30] [--page 1] [--name 迭代名]
 
 # 获取发布计划列表
-uv run {baseDir}/scripts/tapd_client_stdlib.py releases --workspace-id <项目ID> [--limit 30] [--page 1]
+python3 {baseDir}/scripts/tapd_client_stdlib.py releases --workspace-id <项目ID> [--limit 30] [--page 1]
 
 # 通用 GET（任意端点，-p 可多次）
-uv run {baseDir}/scripts/tapd_client_stdlib.py get --endpoint "stories/count" -p workspace_id=<项目ID> -p entity_type=stories
-uv run {baseDir}/scripts/tapd_client_stdlib.py get --endpoint "workspaces/user_participant_projects" -p nick=用户昵称
+python3 {baseDir}/scripts/tapd_client_stdlib.py get --endpoint "stories/count" -p workspace_id=<项目ID> -p entity_type=stories
+python3 {baseDir}/scripts/tapd_client_stdlib.py get --endpoint "workspaces/user_participant_projects" -p nick=用户昵称
 
 # 通用 POST（请求体为 JSON 或 -p key=val 多组）
-uv run {baseDir}/scripts/tapd_client_stdlib.py post --endpoint "stories" -b '{"workspace_id":123,"name":"需求标题","entity_type":"stories"}'
-uv run {baseDir}/scripts/tapd_client_stdlib.py post --endpoint "comments" -p workspace_id=123 -p entry_id=xxx -p entry_type=stories -p author=昵称 -p description=内容
+python3 {baseDir}/scripts/tapd_client_stdlib.py post --endpoint "stories" -b '{"workspace_id":123,"name":"需求标题","entity_type":"stories"}'
+python3 {baseDir}/scripts/tapd_client_stdlib.py post --endpoint "comments" -p workspace_id=123 -p entry_id=xxx -p entry_type=stories -p author=昵称 -p description=内容
 ```
 
 **说明**：未列出的能力（如评论、工作流、Wiki、工时、企业微信等）可通过 `get` / `post` 子命令配合 [reference/api_reference.md](./reference/api_reference.md) 中的端点与参数自行拼装调用。
+
+### 安全与权限建议
+
+- **TAPD_ACCESS_TOKEN**：建议在 TAPD 开放平台中为该技能创建**最小权限、短期有效**的令牌（仅授予所需项目/接口权限，并设置较短过期时间），避免使用高权限长期令牌。
+- **BOT_URL / TAPD_API_BASE_URL**：使用前请确认 `BOT_URL`（企业微信 webhook）和自定义的 `TAPD_API_BASE_URL` 均指向**可信端点**（如 TAPD 官方 `https://api.tapd.cn` 或贵司自建 TAPD、企业微信官方 webhook 地址），避免指向不可信第三方。
+- **可选加固**：若需更强安全，可在沙盒环境中运行本脚本，并限制网络仅允许访问 TAPD API 与 BOT_URL（例如通过防火墙或容器网络策略），以确认脚本仅与预期端点通信。
 
 ### API key / 环境变量
 
@@ -184,7 +181,7 @@ uv run {baseDir}/scripts/tapd_client_stdlib.py post --endpoint "comments" -p wor
 
 ## 使用脚本（可选）
 
-本 Skill 提供仅使用 Python 标准库的客户端脚本 [scripts/tapd_client_stdlib.py](./scripts/tapd_client_stdlib.py)，使用 **uv run {baseDir}/scripts/tapd_client_stdlib.py** 运行（需安装 uv，见 frontmatter metadata.openclaw.install）。可从环境变量读取配置并封装通用 request 及部分高频接口；支持上述**命令行调用**与 Python 内 import 两种方式。
+本 Skill 提供仅使用 Python 标准库的客户端脚本 [scripts/tapd_client_stdlib.py](./scripts/tapd_client_stdlib.py)，使用 **python3 {baseDir}/scripts/tapd_client_stdlib.py** 运行。可从环境变量读取配置并封装通用 request 及部分高频接口；支持上述**命令行调用**与 Python 内 import 两种方式。
 
 ## 注意事项
 

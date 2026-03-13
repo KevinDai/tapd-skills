@@ -13,42 +13,47 @@
 
 | 变量名 | 必填 | 说明 |
 |--------|------|------|
-| TAPD_ACCESS_TOKEN | 二选一 | 个人访问令牌（推荐） |
+| TAPD_ACCESS_TOKEN | 二选一 | 个人访问令牌（推荐）；建议使用最小权限、短期有效的令牌 |
 | TAPD_API_USER | 二选一 | API 账号 |
 | TAPD_API_PASSWORD | 二选一 | API 密钥 |
-| TAPD_API_BASE_URL | 可选 | API 根地址，默认 `https://api.tapd.cn` |
+| TAPD_API_BASE_URL | 可选 | API 根地址，默认 `https://api.tapd.cn`；自定义时请确保指向可信端点 |
 | TAPD_BASE_URL | 可选 | 前端地址，用于生成可点击链接，默认 `https://www.tapd.cn` |
-| BOT_URL | 可选 | 企业微信机器人 webhook（仅发送群消息时需要） |
+| BOT_URL | 可选 | 企业微信机器人 webhook（仅发送群消息时需要）；请确保指向可信 webhook 地址 |
 | CURRENT_USER_NICK | 可选 | 当前用户昵称（参与项目、待办、工时等查询的默认 nick） |
 
 认证二选一：**TAPD_ACCESS_TOKEN** 或 **TAPD_API_USER + TAPD_API_PASSWORD**。凭据在 TAPD 后台「个人设置」→「开放平台」中创建。
 
+### 安全说明
+
+- **TAPD_ACCESS_TOKEN**：建议使用**最小权限、短期有效**的令牌。在 TAPD 开放平台中为该技能单独创建令牌，仅授予所需项目/接口权限，并设置较短过期时间。
+- **BOT_URL 与 TAPD_API_BASE_URL**：使用前请确认 `BOT_URL`（企业微信 webhook）和自定义的 `TAPD_API_BASE_URL` 均指向**可信端点**（如官方 `https://api.tapd.cn` 或贵司自建 TAPD、企业微信官方 webhook），避免指向不可信第三方。
+- **可选加固**：若需更强安全，可在沙盒环境中运行 Python 客户端，并限制网络仅允许访问 TAPD API 与 BOT_URL，以确认出站请求仅发往预期端点。
+
 ## 命令行快速调用
 
-需先安装 [uv](https://github.com/astral-sh/uv)（如 `brew install uv`）；OpenClaw 用户可根据 SKILL.md 中 metadata.openclaw.install 提示安装。配置好环境变量后，在技能目录下用 **uv run** 调用，输出 JSON 到 stdout：
+脚本仅使用 Python 标准库，配置好环境变量后用 **python3** 运行即可，输出 JSON 到 stdout：
 
 ```bash
-uv run scripts/tapd_client_stdlib.py projects [--nick 用户昵称]
-uv run scripts/tapd_client_stdlib.py workspace --workspace-id <项目ID>
-uv run scripts/tapd_client_stdlib.py stories --workspace-id <项目ID> [--limit 10] [--entity-type stories|tasks]
-uv run scripts/tapd_client_stdlib.py bugs --workspace-id <项目ID> [--limit 10]
-uv run scripts/tapd_client_stdlib.py get --endpoint "stories/count" -p workspace_id=<ID> -p entity_type=stories
-uv run scripts/tapd_client_stdlib.py post --endpoint "stories" -b '{"workspace_id":123,"name":"需求标题"}'
+python3 scripts/tapd_client_stdlib.py projects [--nick 用户昵称]
+python3 scripts/tapd_client_stdlib.py workspace --workspace-id <项目ID>
+python3 scripts/tapd_client_stdlib.py stories --workspace-id <项目ID> [--limit 10] [--entity-type stories|tasks]
+python3 scripts/tapd_client_stdlib.py bugs --workspace-id <项目ID> [--limit 10]
+python3 scripts/tapd_client_stdlib.py get --endpoint "stories/count" -p workspace_id=<ID> -p entity_type=stories
+python3 scripts/tapd_client_stdlib.py post --endpoint "stories" -b '{"workspace_id":123,"name":"需求标题"}'
 ```
 
-更多子命令与参数见 [SKILL.md](./SKILL.md) 中的「命令行调用方式」一节，或运行 `uv run scripts/tapd_client_stdlib.py --help`。
+更多子命令与参数见 [SKILL.md](./SKILL.md) 中的「命令行调用方式」一节，或运行 `python3 scripts/tapd_client_stdlib.py --help`。
 
 ## 目录结构
 
-- **SKILL.md**：Skill 说明、操作清单与**命令行调用方式**，AI 主入口；配置（metadata、openclaw.requires/primaryEnv/install）在 frontmatter 中。
-- **pyproject.toml**：uv 项目配置，无第三方依赖，便于 `uv run` 执行脚本。
+- **SKILL.md**：Skill 说明、操作清单与**命令行调用方式**，AI 主入口；配置（metadata、openclaw.requires/primaryEnv）在 frontmatter 中。
+- **pyproject.toml**：Python 项目配置，无第三方依赖。
 - **reference/api_reference.md**：API 端点与参数速查。
 - **scripts/tapd_client_stdlib.py**：仅用 Python 标准库的客户端，支持**命令行子命令**与 Python import。
 
 ## 依赖
 
-- **uv**：运行脚本需安装 [uv](https://github.com/astral-sh/uv)（如 `brew install uv`）；OpenClaw 可根据 SKILL.md 中 `metadata.openclaw.install` 提示安装。
-- 脚本仅用 Python 3 标准库，无第三方包依赖；不依赖 MCP。
+- **Python 3**：脚本仅用 Python 3 标准库，无第三方包依赖；不依赖 MCP。直接使用 `python3` 运行即可。
 
 ## 发布到 OpenClaw / ClawHub
 
